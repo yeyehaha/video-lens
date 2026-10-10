@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Video Lens 直播局部放大",
+  "version": "0.1.0",
+  "description": "在直播/视频页面框选任意区域,悬浮窗口放大显示。支持记忆每个直播间的选择区域。",
+  "permissions": ["storage", "activeTab"],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    },
+    "default_popup": "popup/popup.html",
+    "default_title": "Video Lens 局部放大"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.douyu.com/*",
+        "*://*.huya.com/*",
+        "*://live.bilibili.com/*",
+        "*://*.youtube.com/*",
+        "*://*.twitch.tv/*"
+      ],
+      "exclude_matches": ["*://yuba.douyu.com/*"],
+      "js": [
+        "content/utils.js",
+        "content/zoom-window.js",
+        "content/selection.js",
+        "content/main.js"
+      ],
+      "css": ["content/content.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

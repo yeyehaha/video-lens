@@ -1,0 +1,231 @@
+/* ===== 悬浮放大窗口 ===== */
+.vl-zoom {
+  position: fixed;
+  z-index: 2147483647;
+  background: #101114;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  user-select: none;
+  color: #eee;
+  font: 12px/1.4 system-ui, "Microsoft YaHei", sans-serif;
+}
+
+/* 控制栏覆盖在画面顶部,默认隐藏,鼠标移入窗口才淡入 */
+.vl-zoom-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+  cursor: move;
+  touch-action: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.vl-zoom:hover .vl-zoom-header,
+.vl-zoom-header:focus-within {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.vl-zoom-title {
+  font-weight: 600;
+  margin-right: auto;
+  white-space: nowrap;
+  cursor: text; /* 提示可点击重命名 */
+}
+
+.vl-zoom-title-input {
+  width: 96px;
+  box-sizing: border-box;
+  background: #0d0e10;
+  border: 1px solid #3a3d45;
+  border-radius: 4px;
+  color: #eee;
+  font: 12px system-ui, "Microsoft YaHei", sans-serif;
+  padding: 1px 4px;
+  outline: none;
+}
+
+.vl-zoom-val {
+  color: #ffd04c;
+  font-variant-numeric: tabular-nums;
+  min-width: 36px;
+  text-align: right;
+}
+
+.vl-zoom-btn {
+  all: unset;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #ccc;
+}
+
+.vl-zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.vl-zoom-close:hover {
+  background: #e5484d;
+  color: #fff;
+}
+
+.vl-zoom-body {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+.vl-zoom-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 窗口比例与画面不一致时留黑边,不拉伸 */
+}
+
+/* ===== 八向调整大小手柄 ===== */
+.vl-zoom-rh {
+  position: absolute;
+  touch-action: none;
+  z-index: 3; /* 压在控制栏之上:边缘/角落优先调整大小 */
+}
+
+.vl-rh-n { top: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.vl-rh-s { bottom: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.vl-rh-e { right: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
+.vl-rh-w { left: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
+.vl-rh-ne { top: 0; right: 0; width: 14px; height: 14px; cursor: nesw-resize; }
+.vl-rh-nw { top: 0; left: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+.vl-rh-sw { bottom: 0; left: 0; width: 14px; height: 14px; cursor: nesw-resize; }
+.vl-rh-se {
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+  opacity: 0;
+  background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.35) 50%);
+  transition: opacity 0.15s ease;
+}
+
+.vl-zoom:hover .vl-rh-se {
+  opacity: 1;
+}
+
+/* ===== 框选覆盖层 ===== */
+.vl-select {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  cursor: crosshair;
+}
+
+.vl-select-hint {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font: 13px system-ui, "Microsoft YaHei", sans-serif;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vl-shade {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.vl-select-box {
+  position: fixed;
+  border: 2px dashed #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.vl-select-size {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font: 12px system-ui, "Microsoft YaHei", sans-serif;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* 裁剪模式:不用十字光标 */
+.vl-select-adjust {
+  cursor: default;
+}
+
+/* ===== 放大镜(框选/裁剪时跟随光标) ===== */
+.vl-loupe {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+  background: #000;
+}
+
+.vl-loupe canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== 裁剪调整框 ===== */
+.vl-adj-box {
+  position: fixed;
+  border: 2px solid #2f6ef2;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  cursor: move;
+  touch-action: none;
+}
+
+.vl-adj-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #2f6ef2;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.vl-adj-n { top: -7px; left: 50%; margin-left: -7px; cursor: ns-resize; }
+.vl-adj-s { bottom: -7px; left: 50%; margin-left: -7px; cursor: ns-resize; }
+.vl-adj-e { right: -7px; top: 50%; margin-top: -7px; cursor: ew-resize; }
+.vl-adj-w { left: -7px; top: 50%; margin-top: -7px; cursor: ew-resize; }
+.vl-adj-ne { top: -7px; right: -7px; cursor: nesw-resize; }
+.vl-adj-nw { top: -7px; left: -7px; cursor: nwse-resize; }
+.vl-adj-se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+.vl-adj-sw { bottom: -7px; left: -7px; cursor: nesw-resize; }

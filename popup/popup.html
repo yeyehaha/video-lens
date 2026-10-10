@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      width: 280px;
+      margin: 0;
+      padding: 14px;
+      background: #17181c;
+      color: #eee;
+      font: 13px/1.5 system-ui, "Microsoft YaHei", sans-serif;
+    }
+    h1 { display: flex; align-items: center; gap: 8px; font-size: 14px; margin: 0 0 10px; }
+    h1 img { width: 22px; height: 22px; }
+    #status { color: #9aa0aa; font-size: 12px; margin-bottom: 10px; word-break: break-all; }
+    #status.ok { color: #4cc38a; }
+    #status.err { color: #e5484d; }
+    button {
+      all: unset;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      padding: 8px 0;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      background: #2f6ef2;
+      color: #fff;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover { background: #3f7ef7; }
+    button.secondary { background: #2a2c33; color: #ccc; }
+    button.secondary:hover { background: #34373f; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    button.mini { display: inline-block; width: auto; margin: 0; padding: 5px 12px; font-size: 12px; }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: #ccc;
+    }
+    select, input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      box-sizing: border-box;
+      background: #26282e;
+      color: #eee;
+      border: 1px solid #3a3d45;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 12px;
+    }
+    .scheme-ops { border-top: 1px solid #2a2c33; padding-top: 10px; margin-top: 2px; }
+    .scheme-label { font-size: 12px; color: #9aa0aa; margin-bottom: 6px; }
+    input[type="range"] { flex: 1; accent-color: #2f6ef2; }
+    #zoomVal { min-width: 38px; text-align: right; color: #ffd04c; }
+    input[type="checkbox"] { accent-color: #2f6ef2; }
+  </style>
+</head>
+<body>
+  <h1><img src="../icons/icon-32.png" alt="" />Video Lens 局部放大</h1>
+  <div id="status">检测中…</div>
+
+  <button id="selectBtn">框选新区域(可加多个)</button>
+
+  <div class="scheme-ops">
+    <div class="scheme-label">方案</div>
+    <div class="row">
+      <select id="schemeSelect"></select>
+      <button id="newSchemeBtn" class="mini">新建</button>
+    </div>
+    <div class="row">
+      <input type="text" id="schemeName" placeholder="名称(留空自动命名)" />
+      <button id="saveSchemeBtn" class="mini">另存当前布局</button>
+    </div>
+    <button id="deleteSchemeBtn" class="secondary">删除当前方案</button>
+  </div>
+
+  <label class="row">统一倍数
+    <input type="range" id="zoom" min="1" max="5" step="0.25" value="1" />
+    <span id="zoomVal">×1</span>
+  </label>
+
+  <label class="row"><span style="flex:1">显示悬浮窗口</span>
+    <input type="checkbox" id="showToggle" checked />
+  </label>
+
+  <button id="clearBtn" class="secondary">清除本直播间的全部记忆</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
